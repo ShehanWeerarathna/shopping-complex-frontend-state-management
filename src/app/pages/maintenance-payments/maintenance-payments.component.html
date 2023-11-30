@@ -1,0 +1,79 @@
+<div class="row">
+  <h2>Maintenance Payments - {{ storeName }}</h2>
+</div>
+
+<div class="row mb-3 justify-content-end">
+  <div class="col-md-3 d-flex justify-content-end">
+    <a
+      class="btn btn-primary"
+      routerLink="/maintenance-payment/{{ maintenanceContractId }}/new"
+    >
+      Add new payment
+    </a>
+  </div>
+</div>
+
+<div
+  *ngIf="pagedList.pagedData && pagedList.pagedData.length > 0; else elseBlock"
+  class="row justify-content-center"
+>
+  <div class="col-md-12">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+
+          <th scope="col">Contract</th>
+          <th scope="col">Amount</th>
+          <th scope="col">Payment Date</th>
+          <th>View</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let maintenancePayment of pagedList.pagedData">
+          <td scope="row">{{ maintenancePayment.maintenancePaymentId }}</td>
+          <td scope="row">{{ maintenancePayment.maintenanceContractId }}</td>
+          <td>{{ maintenancePayment.amount }}</td>
+          <td>{{ maintenancePayment.paymentDate | date : "yyyy-MM-dd" }}</td>
+          <td>
+            <a
+              class="btn btn-primary"
+              routerLink="/maintenance-payment/{{
+                maintenancePayment.maintenanceContractId
+              }}/{{ maintenancePayment.maintenancePaymentId }}"
+            >
+              View
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between p-2">
+      <ngb-pagination
+        [collectionSize]="pagedList.totalItemsCount"
+        [(page)]="currentPage"
+        [pageSize]="pageSize"
+        (pageChange)="refreshMaintenancePayments(maintenanceContractId)"
+      >
+      </ngb-pagination>
+
+      <select
+        class="form-select"
+        style="width: auto"
+        [(ngModel)]="pageSize"
+        (ngModelChange)="refreshMaintenancePayments(maintenanceContractId)"
+      >
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="50">50</option>
+        <option [ngValue]="100">100</option>
+      </select>
+    </div>
+  </div>
+</div>
+<ng-template #elseBlock>
+  <div class="alert alert-info">
+    <h4 class="alert-heading">No Maintenance Payments</h4>
+    <p>There are no maintenance payments to display.</p>
+  </div>
+</ng-template>

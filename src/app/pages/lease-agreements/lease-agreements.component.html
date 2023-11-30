@@ -1,0 +1,83 @@
+<div class="row"><h2>Lease Agreements</h2></div>
+<div class="row justify-content-center">
+  <div class="col-md-12">
+    <div
+      *ngIf="
+        pagedList.pagedData && pagedList.pagedData.length > 0;
+        else elseBlock
+      "
+    >
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Store Name</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">End Date</th>
+            <th scope="col">View</th>
+            <th scope="col">Payments</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let leaseAgreement of pagedList.pagedData">
+            <th scope="row">{{ leaseAgreement.leaseAgreementId }}</th>
+            <td>
+              {{ leaseAgreement.store?.storeName }}
+            </td>
+            <td>{{ leaseAgreement.leaseAmount }}</td>
+            <td>{{ leaseAgreement.leaseStartDate | date : "yyyy-MM-dd" }}</td>
+            <td>{{ leaseAgreement.leaseEndDate | date : "yyyy-MM-dd" }}</td>
+            <td>
+              <a
+                class="btn btn-primary"
+                (click)="setSelectedStoreName(leaseAgreement.store?.storeName)"
+                routerLink="/lease-agreement/{{ leaseAgreement.storeId }}"
+              >
+                View
+              </a>
+            </td>
+            <td>
+              <a
+                class="btn btn-primary"
+                (click)="setSelectedStoreName(leaseAgreement.store?.storeName)"
+                routerLink="/lease-payments/{{
+                  leaseAgreement.leaseAgreementId
+                }}"
+              >
+                View Payments
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="d-flex justify-content-between p-2 align-items-center">
+        <ngb-pagination
+          [collectionSize]="pagedList.totalItemsCount"
+          [(page)]="currentPage"
+          [pageSize]="pageSize"
+          (pageChange)="refreshLeaseAgreementList()"
+        >
+        </ngb-pagination>
+
+        <select
+          class="form-select"
+          style="width: auto"
+          [(ngModel)]="pageSize"
+          (ngModelChange)="refreshLeaseAgreementList()"
+        >
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="50">50</option>
+          <option [ngValue]="100">100</option>
+        </select>
+      </div>
+    </div>
+    <ng-template #elseBlock>
+      <div class="alert alert-info">
+        <h4 class="alert-heading">No Lease Agreements</h4>
+        <p>There are no lease agreements to display.</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

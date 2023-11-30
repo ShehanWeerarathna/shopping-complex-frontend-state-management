@@ -1,0 +1,95 @@
+<div class="row">
+  <h2>Maintenance Contracts</h2>
+</div>
+<div class="row justify-content-center">
+  <div class="col-md-12">
+    <div
+      *ngIf="
+        pagedList.pagedData && pagedList.pagedData.length > 0;
+        else elseBlock
+      "
+    >
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Store Name</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">End Date</th>
+            <th>View</th>
+            <th>Payments</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let maintenanceContract of pagedList.pagedData">
+            <th scope="row">{{ maintenanceContract.maintenanceContractId }}</th>
+            <td>
+              {{ maintenanceContract.store?.storeName }}
+            </td>
+            <td>{{ maintenanceContract.contractAmount }}</td>
+            <td>
+              {{ maintenanceContract.contractStartDate | date : "yyyy-MM-dd" }}
+            </td>
+            <td>
+              {{ maintenanceContract.contractEndDate | date : "yyyy-MM-dd" }}
+            </td>
+            <td>
+              <a
+                class="btn btn-primary"
+                (click)="
+                  setSelectedStoreName(maintenanceContract.store?.storeName)
+                "
+                routerLink="/maintenance-contract/{{
+                  maintenanceContract.storeId
+                }}"
+              >
+                View
+              </a>
+            </td>
+            <td>
+              <a
+                class="btn btn-primary"
+                (click)="
+                  setSelectedStoreName(maintenanceContract.store?.storeName)
+                "
+                routerLink="/maintenance-payments/{{
+                  maintenanceContract.maintenanceContractId
+                }}"
+              >
+                View Payments
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="d-flex justify-content-between p-2 align-items-center">
+        <ngb-pagination
+          [collectionSize]="pagedList.totalItemsCount"
+          [(page)]="currentPage"
+          [pageSize]="pageSize"
+          (pageChange)="refreshMaintenanceContractList()"
+        >
+        </ngb-pagination>
+
+        <select
+          class="form-select"
+          style="width: auto"
+          [(ngModel)]="pageSize"
+          (ngModelChange)="refreshMaintenanceContractList()"
+        >
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="50">50</option>
+          <option [ngValue]="100">100</option>
+        </select>
+      </div>
+    </div>
+    <ng-template #elseBlock>
+      <div class="alert alert-info">
+        <h4 class="alert-heading">No Maintenance Contracts</h4>
+        <p>There are no maintenance contracts to display.</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

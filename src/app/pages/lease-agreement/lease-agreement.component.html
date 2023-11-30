@@ -1,0 +1,163 @@
+<div class="row">
+  <h2 class="mt-4">Lease Agreement - {{ storeName }}</h2>
+</div>
+<form [formGroup]="leaseAgreementForm">
+  <div class="form-group">
+    <label for="leaseAmount" class="form-label">Amount:</label>
+    <input
+      class="form-control"
+      id="amount"
+      type="number"
+      formControlName="leaseAmount"
+      required
+      min="0"
+    />
+    <div
+      *ngIf="
+        leaseAgreementForm.controls.leaseAmount?.invalid &&
+        leaseAgreementForm.controls.leaseAmount?.touched
+      "
+      class="alert alert-danger"
+    >
+      <div
+        *ngIf="leaseAgreementForm.controls.leaseAmount?.errors?.['required']"
+      >
+        Amount is required.
+      </div>
+      <div *ngIf="leaseAgreementForm.controls.leaseAmount?.errors?.['min']">
+        Amount must be greater than 0.
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="leaseStartDate" class="form-label">Start Date:</label>
+    <div class="input-group">
+      <input
+        class="form-control"
+        placeholder="yyyy-mm-dd"
+        name="dp"
+        formControlName="leaseStartDate"
+        ngbDatepicker
+        #d="ngbDatepicker"
+      />
+      <button
+        [disabled]="!isEditable"
+        class="btn btn-outline-secondary bi bi-calendar3"
+        (click)="d.toggle()"
+        type="button"
+      >
+        Select Date
+      </button>
+    </div>
+    <div
+      *ngIf="
+        leaseAgreementForm.controls.leaseStartDate?.invalid &&
+        leaseAgreementForm.controls.leaseStartDate?.touched
+      "
+      class="alert alert-danger"
+    >
+      <div
+        *ngIf="leaseAgreementForm.controls.leaseStartDate?.errors?.['ngbDate']"
+      >
+        The selected end date must be later than the start date.
+      </div>
+      <div
+        *ngIf="leaseAgreementForm.controls.leaseStartDate?.errors?.['required']"
+      >
+        Start date is required.
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="leaseEndDate" class="form-label">End Date:</label>
+    <div class="input-group">
+      <input
+        class="form-control"
+        placeholder="yyyy-mm-dd"
+        name="dp"
+        formControlName="leaseEndDate"
+        ngbDatepicker
+        #s="ngbDatepicker"
+        [minDate]="leaseAgreementForm.controls.leaseStartDate.value!"
+      />
+      <button
+        [disabled]="!isEditable"
+        class="btn btn-outline-secondary bi bi-calendar3"
+        (click)="s.toggle()"
+        type="button"
+      >
+        Select Date
+      </button>
+    </div>
+    <div
+      *ngIf="
+        leaseAgreementForm.controls.leaseEndDate?.invalid &&
+        leaseAgreementForm.controls.leaseEndDate?.touched
+      "
+      class="alert alert-danger"
+    >
+      <div
+        *ngIf="leaseAgreementForm.controls.leaseEndDate?.errors?.['ngbDate']"
+      >
+        The selected end date must be later than the start date.
+      </div>
+      <div
+        *ngIf="leaseAgreementForm.controls.leaseEndDate?.errors?.['required']"
+      >
+        End date is required.
+      </div>
+    </div>
+  </div>
+  <!-- Description text area max length 500 -->
+  <div class="form-group">
+    <label for="description" class="form-label">Description:</label>
+    <textarea
+      [disabled]="!isEditable"
+      class="form-control"
+      id="description"
+      rows="3"
+      formControlName="description"
+      maxlength="500"
+    ></textarea>
+    <small class="form-text text-muted"
+      >{{ leaseAgreementForm.controls.description.value?.length }} / 500</small
+    >
+    <div
+      *ngIf="
+        leaseAgreementForm.controls.description?.invalid &&
+        leaseAgreementForm.controls.description?.touched
+      "
+      class="alert alert-danger"
+    >
+      <div
+        *ngIf="leaseAgreementForm.controls.description?.errors?.['required']"
+      >
+        Description is required.
+      </div>
+      <div
+        *ngIf="leaseAgreementForm.controls.description?.errors?.['maxlength']"
+      >
+        Description must be less than 500 characters.
+      </div>
+    </div>
+  </div>
+
+  <ng-template [ngIf]="isEditable" [ngIfElse]="notEditable">
+    <div class="form-group mt-3">
+      <button type="submit" (click)="submitForm()" class="btn btn-primary me-2">
+        Submit
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #notEditable>
+    <div class="form-group mt-3">
+      <button class="btn btn-primary me-2" routerLink="/lease-agreements">
+        Back
+      </button>
+      <button (click)="editForm()" class="btn btn-warning me-2">Edit</button>
+      <button (click)="deleteAgreement()" class="btn btn-danger">Delete</button>
+    </div>
+  </ng-template>
+</form>

@@ -1,0 +1,135 @@
+<div class="row">
+  <h2>Financial Report</h2>
+</div>
+<form class="row row-cols-sm-auto">
+  <div class="col-12">
+    <div class="dp-hidden position-absolute">
+      <div class="input-group">
+        <input
+          name="datepicker"
+          class="form-control"
+          ngbDatepicker
+          #datepicker="ngbDatepicker"
+          [autoClose]="'outside'"
+          (dateSelect)="onDateSelection($event)"
+          [displayMonths]="2"
+          [dayTemplate]="t"
+          outsideDays="hidden"
+          [startDate]="fromDate!"
+          tabindex="-1"
+        />
+        <ng-template #t let-date let-focused="focused">
+          <span
+            class="custom-day"
+            [class.focused]="focused"
+            [class.range]="isRange(date)"
+            [class.faded]="isHovered(date) || isInside(date)"
+            (mouseenter)="hoveredDate = date"
+            (mouseleave)="hoveredDate = null"
+          >
+            {{ date.day }}
+          </span>
+        </ng-template>
+      </div>
+    </div>
+    <div class="input-group">
+      <input
+        #dpFromDate
+        class="form-control"
+        placeholder="yyyy-mm-dd"
+        name="dpFromDate"
+        [value]="formatter.format(fromDate)"
+        (input)="fromDate = validateInput(fromDate, dpFromDate.value)"
+      />
+      <button
+        class="btn btn-outline-secondary bi bi-calendar3"
+        (click)="datepicker.toggle()"
+        type="button"
+      ></button>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="input-group">
+      <input
+        #dpToDate
+        class="form-control"
+        placeholder="yyyy-mm-dd"
+        name="dpToDate"
+        [value]="formatter.format(toDate)"
+        (input)="toDate = validateInput(toDate, dpToDate.value)"
+      />
+      <button
+        class="btn btn-outline-secondary bi bi-calendar3"
+        (click)="datepicker.toggle()"
+        type="button"
+      ></button>
+    </div>
+  </div>
+  <div class="col-12">
+    <button class="btn btn-primary" (click)="getReport()">Get Report</button>
+  </div>
+</form>
+
+<hr />
+<div class="row">
+  <div class="col-md-6">
+    <h3>Credits</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let transaction of financialReport.transactions">
+          <ng-container *ngIf="transaction.isCredit">
+            <td>{{ transaction.paymentDate | date : "yyyy-MM-dd" }}</td>
+            <td>{{ transaction.description }}</td>
+            <td>{{ transaction.amount }}</td>
+          </ng-container>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2">Total Credits:</td>
+          <td>{{ financialReport.totalCredit }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="col-md-6">
+    <h3>Debits</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let transaction of financialReport.transactions">
+          <ng-container *ngIf="!transaction.isCredit">
+            <td>{{ transaction.paymentDate | date : "yyyy-MM-dd" }}</td>
+            <td>{{ transaction.description }}</td>
+            <td>{{ transaction.amount }}</td>
+          </ng-container>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2">Total Debits:</td>
+          <td>{{ financialReport.totalDebit }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <h3>Balance</h3>
+    <p>Current Balance: {{ financialReport.balance }}</p>
+  </div>
+</div>

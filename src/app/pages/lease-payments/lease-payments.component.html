@@ -1,0 +1,75 @@
+<div class="row">
+  <h2>Lease Agreement Payments - {{ storeName }}</h2>
+</div>
+<div class="row mb-3 justify-content-end">
+  <div class="col-md-3 d-flex justify-content-end">
+    <a
+      class="btn btn-primary"
+      routerLink="/lease-payment/{{ leaseAgreementId }}/new"
+      >Add new payment</a
+    >
+  </div>
+</div>
+
+<div
+  *ngIf="pagedList.pagedData && pagedList.pagedData.length > 0; else elseBlock"
+  class="row justify-content-center"
+>
+  <div class="col-md-12">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Agreement</th>
+          <th scope="col">Amount</th>
+          <th scope="col">Payment Date</th>
+          <th>View</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let leasePayment of pagedList.pagedData">
+          <td scope="row">{{ leasePayment.leasePaymentId }}</td>
+          <td scope="row">{{ leasePayment.leaseAgreementId }}</td>
+          <td>{{ leasePayment.amount }}</td>
+          <td>{{ leasePayment.paymentDate | date : "yyyy-MM-dd" }}</td>
+          <td>
+            <a
+              class="btn btn-primary"
+              routerLink="/lease-payment/{{ leasePayment.leaseAgreementId }}/{{
+                leasePayment.leasePaymentId
+              }}"
+              >View</a
+            >
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between p-2">
+      <ngb-pagination
+        [collectionSize]="pagedList.totalItemsCount"
+        [(page)]="currentPage"
+        [pageSize]="pageSize"
+        (pageChange)="refreshLeasePayments(leaseAgreementId)"
+      >
+      </ngb-pagination>
+
+      <select
+        class="form-select"
+        style="width: auto"
+        [(ngModel)]="pageSize"
+        (ngModelChange)="refreshLeasePayments(leaseAgreementId)"
+      >
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="50">50</option>
+        <option [ngValue]="100">100</option>
+      </select>
+    </div>
+  </div>
+</div>
+<ng-template #elseBlock>
+  <div class="alert alert-info">
+    <h4 class="alert-heading">No Lease Payments</h4>
+    <p>There are no lease payments to display.</p>
+  </div>
+</ng-template>

@@ -1,0 +1,88 @@
+<div class="row">
+  <h2>Store - {{ store.storeName }}</h2>
+</div>
+
+<form [formGroup]="storeForm">
+  <div class="form-group">
+    <label for="store-name">Name: </label>
+    <input
+      class="form-control"
+      id="name"
+      type="text"
+      formControlName="storeName"
+    />
+    <div
+      *ngIf="
+        storeForm.controls.storeName?.invalid &&
+        storeForm.controls.storeName?.touched
+      "
+      class="alert alert-danger"
+    >
+      <div *ngIf="storeForm.controls.storeName?.errors?.['required']">
+        Name is required.
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Category: </label>
+    <select id="categoryId" class="form-control" formControlName="categoryId">
+      <option
+        *ngFor="let selectItem of categories"
+        [value]="selectItem.categoryId"
+      >
+        {{ selectItem.categoryName }}
+      </option>
+    </select>
+    <div
+      *ngIf="
+        storeForm.controls.categoryId.invalid &&
+        storeForm.controls.categoryId?.touched
+      "
+      class="alert alert-danger"
+    >
+      <div *ngIf="storeForm.controls.categoryId?.errors?.['min']">
+        Category is required.
+      </div>
+    </div>
+  </div>
+
+  <ng-template [ngIf]="isEditable" [ngIfElse]="notEditable">
+    <div class="form-group">
+      <button type="submit" (click)="submitForm()" class="btn btn-primary m-2">
+        Submit
+      </button>
+    </div>
+  </ng-template>
+  <ng-template #notEditable>
+    <div class="row">
+      <div class="col-6">
+        <div class="d-flex align-items-center justify-content-start">
+          <button (click)="editForm()" class="btn btn-warning m-2">Edit</button>
+          <button (click)="deletePayment()" class="btn btn-danger">
+            Delete
+          </button>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="d-flex align-items-center justify-content-end">
+          <button
+            *ngIf="store.maintenanceContractId"
+            routerLink="/maintenance-contract/{{ store.storeId }}"
+            class="btn btn-primary m-2"
+          >
+            Maintenance Contract
+          </button>
+          <button
+            *ngIf="store.leaseAgreementId"
+            routerLink="/lease-agreement/{{ store.storeId }}"
+            class="btn btn-primary"
+          >
+            Lease Agreement
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</form>

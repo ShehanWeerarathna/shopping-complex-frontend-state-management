@@ -1,0 +1,158 @@
+<div class="row">
+  <h2>Stores list</h2>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="input-group mb-3">
+      <input
+        [(ngModel)]="searchTerm"
+        type="text"
+        class="form-control"
+        placeholder="Search..."
+        (keyup.enter)="refreshStoreList()"
+      />
+      <button
+        class="btn btn-primary input-group-append"
+        type="button"
+        (click)="refreshStoreList()"
+      >
+        Search
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="input-group mb-3">
+      <select
+        id="categoryId"
+        [(ngModel)]="categoryId"
+        (change)="refreshStoreList()"
+        class="form-select"
+      >
+        <option value="0">All Categories</option>
+        <option
+          *ngFor="let selectItem of categories"
+          [value]="selectItem.categoryId"
+        >
+          {{ selectItem.categoryName }}
+        </option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-3 justify-content-end">
+  <div class="col-md-3 d-flex justify-content-end">
+    <a class="btn btn-primary" routerLink="/stores/new">Add new store</a>
+  </div>
+</div>
+
+<div
+  class="row justify-content-center"
+  *ngIf="pagedList.pagedData && pagedList.pagedData.length > 0; else elseBlock"
+>
+  <div class="col-md-12">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+
+          <th scope="col">Store Name</th>
+          <th scope="col">Category</th>
+          <th scope="col">View</th>
+          <th class="text-end">Lease Agreement</th>
+          <th class="text-end">Maintenance Contract</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let store of pagedList.pagedData">
+          <th scope="row">{{ store.storeId }}</th>
+          <td>
+            {{ store.storeName }}
+          </td>
+          <td>{{ store.category?.categoryName }}</td>
+          <td>
+            <a
+              class="btn btn-primary"
+              (click)="setSelectedStoreName(store.storeName)"
+              routerLink="/stores/{{ store.storeId }}"
+            >
+              View
+            </a>
+          </td>
+          <td class="text-end">
+            <a
+              *ngIf="store.leaseAgreementId !== null; else elseBlock"
+              class="btn btn-primary"
+              routerLink="/lease-agreement/{{ store.storeId }}"
+              (click)="setSelectedStoreName(store.storeName)"
+            >
+              View Agreement
+            </a>
+            <ng-template #elseBlock>
+              <a
+                class="btn btn-primary"
+                (click)="setSelectedStoreName(store.storeName)"
+                routerLink="/lease-agreement/{{ store.storeId }}"
+              >
+                Add agreement
+              </a>
+            </ng-template>
+          </td>
+          <td class="text-end">
+            <a
+              *ngIf="
+                store.maintenanceContractId !== null;
+                else elseBlockContract
+              "
+              class="btn btn-primary"
+              (click)="setSelectedStoreName(store.storeName)"
+              routerLink="/maintenance-contract/{{ store.storeId }}"
+            >
+              View Contract
+            </a>
+            <ng-template #elseBlockContract>
+              <a
+                class="btn btn-primary"
+                routerLink="/maintenance-contract/{{ store.storeId }}"
+                (click)="setSelectedStoreName(store.storeName)"
+              >
+                Add contract
+              </a>
+            </ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between p-2 align-items-center">
+      <ngb-pagination
+        [collectionSize]="pagedList.totalItemsCount"
+        [(page)]="currentPage"
+        [pageSize]="pageSize"
+        (pageChange)="refreshStoreList()"
+      >
+      </ngb-pagination>
+
+      <select
+        class="form-select"
+        style="width: auto"
+        [(ngModel)]="pageSize"
+        (ngModelChange)="refreshStoreList()"
+      >
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="50">50</option>
+        <option [ngValue]="100">100</option>
+      </select>
+    </div>
+  </div>
+</div>
+<ng-template #elseBlock>
+  <div class="alert alert-info">
+    <h4 class="alert-heading">No Stores</h4>
+    <p>There are no stores to display.</p>
+  </div>
+</ng-template>
